@@ -113,7 +113,7 @@ def ping(dest_addr, timeout=4):
         timeout: Int. Timeout in seconds. Default is 4s, same as Windows CMD.
 
     Returns:
-        The delay (in seconds) or None on timeout.
+        The delay (in microseconds) or None on timeout.
     """
     icmp_protocol = socket.getprotobyname("icmp")
     my_socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, icmp_protocol)
@@ -121,7 +121,11 @@ def ping(dest_addr, timeout=4):
     send_one_ping(my_socket, dest_addr, my_ID)
     delay = receive_one_ping(my_socket, my_ID, timeout)
     my_socket.close()
-    return delay
+    if delay == None:
+        return delay
+    else:
+        delay = int(delay * 1000)
+        return delay
 
 
 def verbose_ping(dest_addr, timeout=4, count=4):
